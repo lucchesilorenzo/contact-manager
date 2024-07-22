@@ -1,6 +1,6 @@
 # Contact Manager
 
-Contact Manager is a personal project designed to experiment with creating, reading, updating, and deleting (CRUD) operations for managing contacts. The project leverages modern web development technologies including React, Tailwind CSS, React Hot Toast, React Hook Form, Zod, React Query, and React Router.
+Contact Manager is a personal project designed to experiment with creating, reading, updating, and deleting (CRUD) operations for managing contacts.
 
 ## Features
 
@@ -30,7 +30,14 @@ Contact Manager is a personal project designed to experiment with creating, read
   - Automatically format phone numbers as users type.
 
 - **Custom Hooks**
+
   - Utilize custom hooks for efficient contact management.
+
+## Technologies Used
+
+- **Front-end:** Tailwind CSS, React
+- **Back-end:** Supabase
+- **Additional Libraries:** React Hook Form, Zod, React Query, React Router, React Hot Toast
 
 ## Screenshots
 
