@@ -3,19 +3,22 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-
-import Contacts from "./pages/Contacts";
-import CreateFormContact from "./pages/CreateFormContact";
-import ContactFullInfo from "./pages/ContactFullInfo";
-import EditContact from "./pages/EditContact";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 import AppLayout from "./ui/AppLayout";
-import PageError from "./ui/PageError";
+import Contacts from "./pages/Contacts";
+import CreateFormContact from "./pages/CreateFormContact";
+import ViewContactInfo from "./pages/ViewContactInfo";
+import EditFormContact from "./pages/EditFormContact";
+import PageNotFound from "./ui/PageNotFound";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
-    errorElement: <PageError />,
+    errorElement: <PageNotFound />,
     children: [
       {
         path: "/",
@@ -31,18 +34,25 @@ const router = createBrowserRouter([
       },
       {
         path: "/contacts/:contactId",
-        element: <ContactFullInfo />,
+        element: <ViewContactInfo />,
+        errorElement: <PageNotFound />,
       },
       {
         path: "/contacts/edit/:contactId",
-        element: <EditContact />,
+        element: <EditFormContact />,
+        errorElement: <PageNotFound />,
       },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <Toaster />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

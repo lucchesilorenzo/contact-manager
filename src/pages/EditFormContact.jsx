@@ -1,42 +1,48 @@
+import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useCreateContact } from "../hooks/useCreateContact";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import Spinner from "../ui/Spinner";
+import PageNotFound from "../ui/PageNotFound";
+
+import { useUpdateContact } from "../hooks/useUpdateContact";
+import { useContact } from "../hooks/useContact";
 import { contactSchema } from "../schemas/contactSchema";
 
-function CreateFormContact() {
+function EditFormContact() {
+  const { contactId } = useParams();
+  const {
+    contact: { name, lastName, phone, email, title, company } = {},
+    isLoading,
+    error,
+  } = useContact(contactId);
+  const { updateContact, isUpdating } = useUpdateContact(contactId);
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(contactSchema),
   });
+  const isWorking = isUpdating || isSubmitting;
 
-  const { createContact, isCreating } = useCreateContact();
-  const isWorking = isCreating || isSubmitting;
+  if (isLoading) return <Spinner />;
+  if (error) return <PageNotFound />;
 
   async function onSubmit(data) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    const image = data.image[0];
+    const image = typeof data.image === "string" ? data.image : data.image[0];
 
-    createContact(
-      { ...data, image },
-      {
-        onSuccess: () => reset(),
-      },
-    );
+    updateContact({ newContactData: { ...data, image }, contactId });
   }
 
   return (
     <>
-      <h1 className="mb-1 text-3xl font-medium text-green-600">
-        Create contact
-      </h1>
+      <h1 className="mb-1 text-3xl font-medium text-blue-600">Edit contact</h1>
       <p className="mb-4 italic text-stone-500">
-        Use this form to add a new contact to your directory. Fill in the
-        necessary details such as name, phone number, and email address.
-        Optionally, you can also add a company and title.
+        Use this form to update the contact's information. Make sure all
+        required fields are filled out correctly. You can also update the
+        contact's profile picture if needed.
       </p>
 
       <form
@@ -46,10 +52,11 @@ function CreateFormContact() {
         <div>
           <label htmlFor="name">Name</label>
           <input
-            className="disabled: w-full rounded-lg border border-stone-200 px-4 py-2 text-sm transition-all duration-300 focus:text-stone-700 focus:outline-none focus:ring focus:ring-stone-300"
+            className="w-full rounded-lg border border-stone-200 px-4 py-2 text-sm transition-all duration-300 focus:text-stone-700 focus:outline-none focus:ring focus:ring-stone-300"
             type="text"
             id="name"
             disabled={isWorking}
+            defaultValue={name}
             {...register("name")}
           />
           {errors.name && <p className="text-red-500">{errors.name.message}</p>}
@@ -62,6 +69,7 @@ function CreateFormContact() {
             type="text"
             id="lastName"
             disabled={isWorking}
+            defaultValue={lastName}
             {...register("lastName")}
           />
           {errors.lastName && (
@@ -76,6 +84,7 @@ function CreateFormContact() {
             type="tel"
             id="phone"
             disabled={isWorking}
+            defaultValue={phone}
             {...register("phone")}
           />
           {errors.phone && (
@@ -90,6 +99,7 @@ function CreateFormContact() {
             type="email"
             id="email"
             disabled={isWorking}
+            defaultValue={email}
             {...register("email")}
           />
           {errors.email && (
@@ -104,6 +114,7 @@ function CreateFormContact() {
             type="text"
             id="company"
             disabled={isWorking}
+            defaultValue={company}
             {...register("company")}
           />
         </div>
@@ -115,6 +126,7 @@ function CreateFormContact() {
             type="text"
             id="title"
             disabled={isWorking}
+            defaultValue={title}
             {...register("title")}
           />
         </div>
@@ -130,8 +142,8 @@ function CreateFormContact() {
           />
         </div>
         <div>
-          <button className="ring:gray-200 rounded-full bg-green-600 px-4 py-2 font-semibold text-stone-100 transition-all duration-300 hover:bg-green-700 hover:text-stone-200 focus:outline-none focus:ring focus:ring-green-800">
-            {isSubmitting ? "Creating..." : "Create"}
+          <button className="ring:gray-200 rounded-full bg-blue-600 px-4 py-2 font-semibold text-stone-100 transition-all duration-300 hover:bg-blue-700 hover:text-stone-200 focus:outline-none focus:ring focus:ring-blue-800">
+            {isSubmitting ? "Updating..." : "Update"}
           </button>
         </div>
       </form>
@@ -139,4 +151,4 @@ function CreateFormContact() {
   );
 }
 
-export default CreateFormContact;
+export default EditFormContact;

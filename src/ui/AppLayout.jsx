@@ -7,9 +7,8 @@ function AppLayout() {
     <div className="grid h-screen grid-rows-[auto_1fr_auto]">
       <Header />
 
-      {/*className="overflow-scroll" */}
       <div>
-        <main className="px-6 py-3">
+        <main className="px-4 py-3">
           <Outlet />
         </main>
       </div>
